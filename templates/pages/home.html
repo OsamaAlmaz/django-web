@@ -1,0 +1,62 @@
+
+{% extends 'base.html' %}
+
+{% block headtitle %}
+This is the homepage!!
+{% endblock headtitle %}
+
+{% block content %}
+Welcome Again, this part is home.html
+{% load static %}
+
+<div id= 'tweets'>
+    Replace me
+</div>
+
+
+<script>
+const tweetsElement = document.getElementById('tweets')
+tweetsElement.innerHTML = 'loading ....'
+// var el1 = '<h1> First Element</h1>'
+// var el2 = '<h1> Second Element</h1>'
+// var el3 = '<h1> Third Element</h1>'
+
+// tweetsElement.innerHTML = el1 +el2 + el3
+
+
+const xhr = new XMLHttpRequest()
+const method = 'GET'
+const url = '/tweets'
+const responseType = "json"
+
+function formatedTweetElement(tweet){
+    var formatedTweet = "<div><h1 class='h1'>"
+     + tweet.id +
+    "</h1>" + "<p>" 
+    + tweet.content + "</p></div>" + "<div>" + Likebtn() + "</div>"
+    return formatedTweet
+}
+function Likebtn(){
+    return "<button> Like </button> "
+}
+xhr.responseType = responseType
+xhr.open(method, url)
+xhr.onload = function(){
+    const serverResponse = xhr.response
+    var listedItem = serverResponse.response
+    var i = 0
+    var finalTweetStr = ""
+    for (i=0; i< listedItem.length; i++){
+        tweetObject = listedItem[i]
+        currentItem = formatedTweetElement(tweetObject)
+        finalTweetStr += currentItem
+    }
+    tweetsElement.innerHTML = finalTweetStr
+
+
+}
+xhr.send()
+
+</script>
+
+{% endblock content%}
