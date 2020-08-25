@@ -6,38 +6,51 @@ This is the homepage!!
 {% endblock headtitle %}
 
 {% block content %}
-Welcome Again, this part is home.html
+TweetMeAgain
 {% load static %}
+<div class = 'row text-center'>
+    <div class = "col">
+        <h1>Welcome To TweetMe 2 </h1>
+    </div>
+</div>
 
 <div id= 'tweets'>
-    Replace me
+
 </div>
+
+
+
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
 
 <script>
 const tweetsElement = document.getElementById('tweets')
 tweetsElement.innerHTML = 'loading ....'
-// var el1 = '<h1> First Element</h1>'
-// var el2 = '<h1> Second Element</h1>'
-// var el3 = '<h1> Third Element</h1>'
-
-// tweetsElement.innerHTML = el1 +el2 + el3
-
-
 const xhr = new XMLHttpRequest()
 const method = 'GET'
 const url = '/tweets'
 const responseType = "json"
 
 function formatedTweetElement(tweet){
-    var formatedTweet = "<div><h1 class='h1'>"
+    var formatedTweet = "<div class = 'col-12 border py-3 mb-4' id = 'tweet'><h1 class='h1'>"
      + tweet.id +
     "</h1>" + "<p>" 
-    + tweet.content + "</p></div>" + "<div>" + Likebtn() + "</div>"
+    + tweet.content + "</p></div>" + "<div>" + Likebtn(tweet) + "</div><br>"
     return formatedTweet
 }
-function Likebtn(){
-    return "<button> Like </button> "
+
+function handleDidLike(tweet_id, currentLikes){
+    console.log(tweet_id, currentLikes)
+
+}
+
+function Likebtn(tweet){
+    return "<button onclick = handleDidLike("
+    + tweet.id + "," + tweet.likes +
+    ")> Like "+ tweet.likes+
+    "</button>"
 }
 xhr.responseType = responseType
 xhr.open(method, url)

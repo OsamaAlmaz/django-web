@@ -4,6 +4,9 @@
     Tweetme2 {% block headtitle %}{% endblock headtitle %}
 </title>
 <body>
-    {% block content %}
-    {% endblock content %}
+    {% include 'components/navbar.html' %}
+    <div class = 'container-fluid'>
+        {% block content %}
+        {% endblock content %}    
+    </div>
 </body>
