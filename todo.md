@@ -11,6 +11,7 @@
         -> User plus who they followed.
 2. Tweets
     -> Creating
+        -> creates the tweets that we can divide it.
         -> Text
         -> Image
     -> Delete 
