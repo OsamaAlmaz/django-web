@@ -4,39 +4,84 @@ from .models import Tweets
 from .form import TweetForm
 from .serializers import TweetSerializer
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view,permission_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
 
 import random
 from django.utils.http import is_safe_url
 from django.conf import settings
 
 # Create your views here.
-
+0
 def home_page(request, *args, **kwargs):
     return render(request, template_name="pages/home.html", context={}, status=200)
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
+@api_view(['GET'])
 def tweet_list_view(request, *args, **kwargs):
+    qs = Tweets.objects.all()
+    serializer = TweetSerializer(qs, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def tweet_detail_view(request, tweet_id, *args, **kwargs):
+    qs = Tweets.objects.filter(id= tweet_id)
+    if not qs.exists():
+        return Response({"message": "The Tweet does not exists! Please find another tweet"}, status=404)
+    obj = qs.first()
+    #how would you serialize the tweet. 
+    serializer = TweetSerializer(obj)
+    return Response(serializer.data, status=200)
+
+@api_view(['POST']) #http method that the client sent are post.
+@permission_classes([IsAuthenticated])
+# @authentication_classes([SessionAuthentication])
+def tweet_create_view(request, *args, **kwargs):
+    data = request.POST or None
+    serializer = TweetSerializer(data=data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201) 
+    return Response({}, status=400)
+
+@api_view(['DELETE','GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def tweet_delete_view(request, tweet_id, *args, **kwargs):
+    is_tweet = Tweets.objects.filter(id=tweet_id).exists()
+    if not is_tweet:
+        return Response({"message": "The Tweet does not exists"}, status=404)
+    
+    is_user = Tweets.objects.filter(user=request.user).exists()
+    print(is_user)
+    if not is_user:
+        return Response({'message': 'user is not Registered! Please register and Delete the Tweet'}, status=401)
+    if not is_tweet:
+        return Response({"message":"User or Tweet id is not registered"},status=404)
+    print(is_tweet)
+
+    qs = Tweets.objects.filter(id=tweet_id).delete()
+    return Response( {'message': 'Tweet was successfully deleted!'}, status=200)
+
+
+def tweet_list_view_1(request, *args, **kwargs):
     """
         REST API
         MUST BE FIRST INITIALIZED BY THE URL TAB IN ORDER FOR THIS TO WORK PROBERLY. 
         getting it from the database.
         consume by Javascript, or other apps.
     """
-    print("This the Tweet request:")
     qs = Tweets.objects.all()
     tweet_list = [x.searlize() for x in qs]
     data = {
         "response": tweet_list
     }
     return JsonResponse(data)
-def tweet_create_view(request, *args, **kwargs):
-    data = request.POST or None
-    serializer = TweetSerializer(data=request.POST or None)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save(user=request.user)
-        return Response(serializer.data)
-    return Response({}, status=400)
+
+
+
 
 def tweet_create_view_1(request, *args, **kwargs):
     form = TweetForm(request.POST or None)
