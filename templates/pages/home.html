@@ -63,11 +63,14 @@ function handleFormDidSubmit(event){
     const method = myForm.getAttribute('method')
     console.log(url, method)
     const xhr = new XMLHttpRequest()
+    console.log(xhr)
     xhr.open(method,url)
     xhr.setRequestHeader('HTTP_X_REQUESTED_WITH','XMLHttpRequest')
     xhr.setRequestHeader('X-Requested-With','XMLHttpRequest')
     xhr.responseType = "json"
     xhr.onload = function(){
+        const response = xhr.response
+        console.log("the main response is the following",response)
         if (xhr.status === 201){
             const newTweet = xhr.response
             const newTweetElement = formatedTweetElement(newTweet)
@@ -116,7 +119,8 @@ function loadTweets(tweetsElement){
     xhr.open(method, url)
     xhr.onload = function(){
         const serverResponse = xhr.response
-        var listedItem = serverResponse.response
+        var listedItem = serverResponse
+        console.log(listedItem)
         var i = 0
         var finalTweetStr = ""
         for (i=0; i< listedItem.length; i++){
@@ -134,9 +138,9 @@ tweetsElement.innerHTML = 'loading ....'
 
 function formatedTweetElement(tweet){
     var formatedTweet = "<div class = 'col-12 border py-3 mb-4' id = 'tweet'><h1 class='h1'>"
-     + tweet.id +
+     + tweet.user +
     "</h1>" + "<p>" 
-    + tweet.content + "</p></div>" + "<div>" + Likebtn(tweet) + "</div><br>"
+    + tweet.content +"</p></div>" + "<div>" + Likebtn(tweet) + "</div><br>"
     return formatedTweet
 }
 
@@ -151,7 +155,9 @@ function Likebtn(tweet){
     ")> Like "+ tweet.likes+
     "</button>"
 }
-
+function Deletebtn(tweet){
+    return "<button onclick= ha"
+}
 
 </script>
 

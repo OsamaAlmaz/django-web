@@ -13,3 +13,4 @@ class TweetSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This Tweet is too long')
         return value
     
+    
