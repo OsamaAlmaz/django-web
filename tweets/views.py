@@ -2,7 +2,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 from .models import Tweets
 from .form import TweetForm
-from .serializers import TweetSerializer
+from .serializers import TweetSerializer, TweetActionSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view,permission_classes
@@ -46,6 +46,32 @@ def tweet_create_view(request, *args, **kwargs):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201) 
     return Response({}, status=400)
+
+@api_view(['POST']) #http method that the client sent are post.
+@permission_classes([IsAuthenticated])
+def tweet_action_view(request, *args, **kwargs):
+    '''
+    id is required.
+    Action: Like, unlike and retweet.
+    '''
+    print(request.POST, request.data)
+    serializer = TweetActionSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        tweet_id = data.get('id')
+        action = data.get('action')
+        qs = Tweets.objects.filter(id=tweet_id) # returns a queryset not a TweetObject thus must call .first()
+        if not qs.exists():
+            return Response({"message": "The specific like does not exists"}, status=404)
+        obj = qs.first()
+        if action == 'like':
+            obj.likes.add(request.user)
+        elif action == 'unlike':
+            obj.likes.remove(request.user)
+        elif action =='retweet':
+            pass
+    return Response({"message": "likes is added now."}, status=200)
+
 
 @api_view(['DELETE','GET', 'POST'])
 @permission_classes([IsAuthenticated])
