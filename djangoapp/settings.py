@@ -31,6 +31,9 @@ ALLOWED_HOSTS = ['127.0.0.1']
 MAX_TWEET_LENGTH =200
 # Application definition
 
+TWEET_ACTION_OPTIONS = ['likes','unlike','delete']
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
