@@ -2,7 +2,11 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 from .models import Tweets
 from .form import TweetForm
-from .serializers import TweetSerializer, TweetActionSerializer
+from .serializers import (
+    TweetSerializer,
+    TweetActionSerializer,
+    TweetCreateSerializer
+)
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view,permission_classes
@@ -38,10 +42,10 @@ def tweet_detail_view(request, tweet_id, *args, **kwargs):
 
 @api_view(['POST']) #http method that the client sent are post.
 @permission_classes([IsAuthenticated])
-# @authentication_classes([SessionAuthentication])
 def tweet_create_view(request, *args, **kwargs):
+    print(request.data, request.POST)
     data = request.POST or None
-    serializer = TweetSerializer(data=data)
+    serializer = TweetCreateSerializer(data=data)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201) 
@@ -60,6 +64,7 @@ def tweet_action_view(request, *args, **kwargs):
         data = serializer.validated_data
         tweet_id = data.get('id')
         action = data.get('action')
+        content = data.get('content')
         qs = Tweets.objects.filter(id=tweet_id) # returns a queryset not a TweetObject thus must call .first()
         if not qs.exists():
             return Response({"message": "The specific like does not exists"}, status=404)
@@ -69,7 +74,14 @@ def tweet_action_view(request, *args, **kwargs):
         elif action == 'unlike':
             obj.likes.remove(request.user)
         elif action =='retweet':
-            pass
+            parent_obj = obj
+            newTweet = Tweets.objects.create(
+                user=request.user,
+                parent=parent_obj,
+                content=content,
+            )
+            serializer = TweetSerializer(newTweet)
+            return Response(serializer.data, status=200)
     return Response({"message": "likes is added now."}, status=200)
 
 
