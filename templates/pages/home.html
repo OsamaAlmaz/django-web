@@ -167,12 +167,13 @@ function getCookie(name) {
 
 function handleTweetActionbtn(tweet_id, currentLikes, action){
     console.log(tweet_id, currentLikes)
+    console.log(action,"this is the action")
     const csrftoken = getCookie('csrftoken')
     const url = 'api/tweets/action'
     const method= 'POST'
     console.log(tweet_id, "this is the tweet id")
     const data = JSON.stringify({
-        id: tweet_id,
+        id: tweet_id.id,
         action: action
     })
     const xhr = new XMLHttpRequest()
@@ -187,10 +188,13 @@ function handleTweetActionbtn(tweet_id, currentLikes, action){
     xhr.send(data)
     
 }
+
+
+
 function Retweetbtn(tweet){
     return "<button class='btn btn-outline-success btn-sm' onclick = handleTweetActionbtn("
-    + tweet.id + "," + tweet.likes +
-    ",'unlike'" +
+    + tweet.id + "," + tweet.content + "," + tweet.likes +
+    ",'retweet'" +
     ")> retweet "
     "</button>"
 }
