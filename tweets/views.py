@@ -60,12 +60,16 @@ def tweet_action_view(request, *args, **kwargs):
     '''
     print(request.POST, request.data)
     serializer = TweetActionSerializer(data=request.data)
+    print(serializer.is_valid())
     if serializer.is_valid(raise_exception=True):
         data = serializer.validated_data
         tweet_id = data.get('id')
         action = data.get('action')
         content = data.get('content')
-        qs = Tweets.objects.filter(id=tweet_id) # returns a queryset not a TweetObject thus must call .first()
+        qs = Tweets.objects.filter(id=tweet_id) 
+        print(tweet_id, "this is the tweet id")
+        print(qs.exists(), "this is the qs")
+        print(qs.first(), "this is the qs first")
         if not qs.exists():
             return Response({"message": "The specific like does not exists"}, status=404)
         obj = qs.first()
