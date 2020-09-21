@@ -28,6 +28,7 @@ class Tweets(models.Model):
     @property
     def is_retweet(self):
         return self.parent != None
+    
 
     def searlize(self):
 
