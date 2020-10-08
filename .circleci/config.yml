@@ -14,6 +14,9 @@ jobs:
       - run:
           command: ./manage.py test
           name: Test
+      - run:
+          command: pep8 --show-source --show-pep8 djangoapp/*
+          name: pep8-test
 
 workflows:
   main:
