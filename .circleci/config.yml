@@ -1,11 +1,11 @@
 version: 2.1
-executorType: docker
+
 orbs:
-    python: circleci/python@0.2.1
+  python: circleci/python@0.2.1
 
 jobs:
-    build-and-test:
-    executor: g/default
+  build-and-test:
+    executor: python/default
     steps:
       - checkout
       - python/load-cache
