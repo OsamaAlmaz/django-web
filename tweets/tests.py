@@ -34,6 +34,8 @@ class TweetTestCase(TestCase):
         response = client.get('/api/tweets/')
         self.assertEqual(response.status_code, 200)
     
+
+    
     # we need to test each API.
     
     # def test_action_like(self):
@@ -47,5 +49,12 @@ class TweetTestCase(TestCase):
 
     def test_action_retweet(self):
         client = self.__get_client()
-        response = client.post('/api/tweets/action', {'id': 54 , "action": 'retweet'}, format= 'json')
-        print(response.json())
+        response = client.post('/api/tweets/action', {'id': 54 , "action": 'like'}, format= 'json')
+        print(response.status_code, "this is the response status code")
+        #self.assertEqual(response.status_code, 200)
+    
+    def test_tweet_list_view(self):
+        client= self.__get_client()
+        response = client.get('tweets')
+        print(response)
+        #self.assertEqual(response.status_code, 200)

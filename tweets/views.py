@@ -1,6 +1,6 @@
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
-from .models import Tweets
+from tweets.models import Tweets
 from .form import TweetForm
 from .serializers import (
     TweetSerializer,
@@ -36,7 +36,7 @@ def tweet_detail_view(request, tweet_id, *args, **kwargs):
     if not qs.exists():
         return Response({"message": "The Tweet does not exists! Please find another tweet"}, status=404)
     obj = qs.first()
-    #how would you serialize the tweet. 
+    #how would you serialize the tweet.
     serializer = TweetSerializer(obj)
     return Response(serializer.data, status=200)
 
@@ -48,8 +48,13 @@ def tweet_create_view(request, *args, **kwargs):
     serializer = TweetCreateSerializer(data=data)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
-        return Response(serializer.data, status=201) 
+        return Response(serializer.data, status=201)
     return Response({}, status=400)
+
+def testing(request, *args, **kwargs):
+    qsall= Tweets.objects.all
+    return
+
 
 @api_view(['POST']) #http method that the client sent are post.
 @permission_classes([IsAuthenticated])
@@ -61,15 +66,17 @@ def tweet_action_view(request, *args, **kwargs):
     print(request.POST, request.data)
     serializer = TweetActionSerializer(data=request.data)
     print(serializer.is_valid())
+    print(serializer.validated_data, "this is the validated data")
     if serializer.is_valid(raise_exception=True):
         data = serializer.validated_data
-        tweet_id = data.get('id')
+        tweet_id = int(data.get('id'))
         action = data.get('action')
         content = data.get('content')
-        qs = Tweets.objects.filter(id=tweet_id) 
-        print(tweet_id, "this is the tweet id")
-        print(qs.exists(), "this is the qs")
-        print(qs.first(), "this is the qs first")
+        qsall= Tweets.objects.all()
+        print("start printing all objects",qsall)
+        for item in qsall:
+            print(item)
+        qs = Tweets.objects.filter(id=data.get('id'))
         if not qs.exists():
             return Response({"message": "The specific like does not exists"}, status=404)
         obj = qs.first()
@@ -95,7 +102,7 @@ def tweet_delete_view(request, tweet_id, *args, **kwargs):
     is_tweet = Tweets.objects.filter(id=tweet_id).exists()
     if not is_tweet:
         return Response({"message": "The Tweet does not exists"}, status=404)
-    
+
     is_user = Tweets.objects.filter(user=request.user).exists()
     print(is_user)
     if not is_user:
@@ -111,7 +118,7 @@ def tweet_delete_view(request, tweet_id, *args, **kwargs):
 def tweet_list_view_1(request, *args, **kwargs):
     """
         REST API
-        MUST BE FIRST INITIALIZED BY THE URL TAB IN ORDER FOR THIS TO WORK PROBERLY. 
+        MUST BE FIRST INITIALIZED BY THE URL TAB IN ORDER FOR THIS TO WORK PROBERLY.
         getting it from the database.
         consume by Javascript, or other apps.
     """
@@ -142,7 +149,7 @@ def tweet_create_view_1(request, *args, **kwargs):
     if form.errors:
         if request.is_ajax:
             return JsonResponse(form.errors, status=400)
-    
+
     return render(request, 'components/form.html', context={"form": form})
 
 def another_page(request, tweet_id, *args, **kwargs):
