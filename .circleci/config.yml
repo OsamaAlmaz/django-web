@@ -5,9 +5,7 @@ orbs:
 
 jobs:
   build-and-test:
-    docker:
-      - image: python:3.7.9-stretch
-      
+    executor: python/default
     steps:
       - checkout
       - python/load-cache
@@ -16,14 +14,6 @@ jobs:
       - run:
           command: ./manage.py test
           name: Test
-  
-  pep-8-test:
-    executor: python/default
-    steps:
-      - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
       - run:
         command: pep8 --show-source --show-pep8 djangoapp/*
         name: pep8-test
