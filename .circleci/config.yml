@@ -15,11 +15,10 @@ jobs:
           command: ./manage.py test
           name: Test
       - run:
-        command: pep8 --show-source --show-pep8 djangoapp/*
-        name: pep8-test
-  
+          command: pep8 --show-source --show-pep8 djangoapp/* && tweets/*
+          name: pep8-fix
+
 workflows:
   main:
     jobs:
       - build-and-test
-      - pep-8-test

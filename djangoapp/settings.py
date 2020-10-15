@@ -26,7 +26,7 @@ SECRET_KEY = '4&&zbj%$3mei3b^j!*6_tqqobi5+zjk%lj7h&v5djmav*$b(h8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 MAX_TWEET_LENGTH =200
 # Application definition
@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     # third party
     'rest_framework',
     'tweets',
+    'corsheaders',
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'djangoapp.urls'
@@ -85,8 +89,11 @@ WSGI_APPLICATION = 'djangoapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'osama.almazloum',
+        'PASSWORD': 'postgres',
+        'PORT': '5432'
     }
 }
 
@@ -128,6 +135,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://192.168.0.36:3000']
+CORS_URLS_REGEX = r'^/.*$' #any of end can be accepted as an api here. 
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
