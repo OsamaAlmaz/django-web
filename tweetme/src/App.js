@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import Button from './Button/button'
-import Tweet from './Tweet/Tweet'
+import Actionbutton from './components/button'
+import Tweet from './components/Tweet'
+
 
 function loadTweets(callbackfunction){
   const xhr = new XMLHttpRequest()
@@ -22,6 +23,7 @@ function App() {
   useEffect(()=> {
 
     const callbackfunction = (response, status) => {
+      console.log(response)
       if (status === 200){
         console.log(response)
         setTweets(response)
@@ -37,16 +39,24 @@ function App() {
 
   return (
     <div className="App"> 
-      <p>
-        {tweets.map((item)=>{
-        return <Tweet id = {item.id} content={item.content}/>
+      <div>
+        
+
+
+
+        {tweets.map((item, key)=>{
+        return (
+          <div>
+            <Tweet id = {item.id} content={item.content} />
+            <Actionbutton className='btn btn-primary btn-sm' text='like' action=''/>
+            <Actionbutton className='btn btn-outline-primary btn-sm' text='unlike' action= '' />
+            <Actionbutton className ='btn btn-outline-success btn-sm' text='retweet' action='' />
+
+          </div> 
+          );
         })}
-      </p>
-      <Button
-      text = 'submit'
-      />
 
-
+      </div>
     </div>
   );
 }
