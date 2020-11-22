@@ -1,10 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 
-function Button(props) {
+function ActionButton(props) {
 
   return (
-    <div className = '.btn'>
       <button
       className={props.className}
       type = {props.type}
@@ -12,9 +11,8 @@ function Button(props) {
       >
         {props.text}
       </button>
-
-    </div>
+    
   );
 }
 
-export default Button;
+export default ActionButton;
